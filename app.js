@@ -3,6 +3,30 @@ const SUPABASE_URL = 'https://cfjkgbyrzmkfqsgbrbsx.supabase.co'
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmamtnYnlyem1rZnFzZ2JyYnN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5MzI3OTMsImV4cCI6MjA5NzUwODc5M30.tZnUoUGyObV7YLBZnKPSZynoPJAe9KrmyW0eynqtKZQ'
 var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
+
+// 로그인 체크
+async function checkAuth() {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    window.location.href = 'index.html'
+  }
+  return user
+}
+
+// 이미 로그인된 유저는 로그인 페이지 접근 못하게
+async function checkAlreadyLoggedIn() {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user) {
+    window.location.href = 'dashboard.html'
+  }
+}
+
+// 페이지별 자동 실행
+if (window.location.pathname.includes('index') || window.location.pathname === '/dorm_web/') {
+  checkAlreadyLoggedIn()
+}
+
+
 // 로그인
 async function login() {
   const email = document.getElementById('email').value
