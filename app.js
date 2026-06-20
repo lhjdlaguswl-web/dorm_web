@@ -127,7 +127,8 @@ async function loadComplaints() {
       <p><strong>${c.category}</strong> - ${c.location}</p>
       <p>${c.description}</p>
       <p>상태: <span class="status-${c.status}">${c.status}</span></p>
-      <p class="date">${new Date(c.created_at).toLocaleDateString()}</p>
+<p class="date">${new Date(c.created_at).toLocaleDateString()}</p>
+<button onclick="deleteMyComplaint('${c.id}')">삭제</button>
     </div>
   `).join('')
 }
@@ -258,4 +259,20 @@ async function deleteComplaint(id) {
 // admin 페이지면 자동 실행
 if (window.location.pathname.includes('admin')) {
   loadAdminComplaints()
+}
+// 학생 민원 삭제
+async function deleteMyComplaint(id) {
+  if (!confirm('정말 삭제하시겠어요?')) return
+
+  const { error } = await supabase
+    .from('complaints')
+    .delete()
+    .eq('id', id)
+
+  if (error) {
+    alert('삭제 실패: ' + error.message)
+  } else {
+    alert('삭제되었습니다!')
+    loadComplaints()
+  }
 }
