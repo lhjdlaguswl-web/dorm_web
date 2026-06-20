@@ -260,6 +260,7 @@ async function deleteComplaint(id) {
 // admin 페이지면 자동 실행
 if (window.location.pathname.includes('admin')) {
   loadAdminComplaints()
+  loadStats()
 }
 // 학생 민원 삭제
 async function deleteMyComplaint(id) {
