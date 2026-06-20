@@ -59,3 +59,45 @@ async function register() {
   alert('회원가입 성공! 로그인 해주세요.')
   window.location.href = 'index.html'
 }
+// 로그아웃
+async function logout() {
+  await supabase.auth.signOut()
+  window.location.href = 'index.html'
+}
+
+// 내 민원 목록 불러오기
+async function loadComplaints() {
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    window.location.href = 'index.html'
+    return
+  }
+
+  const { data, error } = await supabase
+    .from('complaints')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+
+  const list = document.getElementById('complaint-list')
+
+  if (error || !data || data.length === 0) {
+    list.innerHTML = '<p>아직 신청한 민원이 없어요.</p>'
+    return
+  }
+
+  list.innerHTML = data.map(c => `
+    <div class="complaint-item">
+      <p><strong>${c.category}</strong> - ${c.location}</p>
+      <p>${c.description}</p>
+      <p>상태: <span class="status">${c.status}</span></p>
+      <p class="date">${new Date(c.created_at).toLocaleDateString()}</p>
+    </div>
+  `).join('')
+}
+
+// dashboard 페이지면 자동 실행
+if (window.location.pathname.includes('dashboard')) {
+  loadComplaints()
+}
