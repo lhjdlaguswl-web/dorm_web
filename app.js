@@ -1,7 +1,7 @@
 // Supabase 연결
 const SUPABASE_URL = 'https://cfjkgbyrzmkfqsgbrbsx.supabase.co'
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmamtnYnlyem1rZnFzZ2JyYnN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5MzI3OTMsImV4cCI6MjA5NzUwODc5M30.tZnUoUGyObV7YLBZnKPSZynoPJAe9KrmyW0eynqtKZQ'
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
 // 로그인
 async function login() {
