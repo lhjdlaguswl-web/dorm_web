@@ -136,6 +136,7 @@ async function loadComplaints() {
 // dashboard 페이지면 자동 실행
 if (window.location.pathname.includes('dashboard')) {
   loadComplaints()
+  loadStats()
 }
 // 민원 신청
 async function submitComplaint() {
@@ -275,4 +276,38 @@ async function deleteMyComplaint(id) {
     alert('삭제되었습니다!')
     loadComplaints()
   }
+}
+// 전체 민원 통계
+async function loadStats() {
+  const { data, error } = await supabase
+    .from('complaints')
+    .select('status')
+
+  if (error || !data) return
+
+  const total = data.length
+  const 접수됨 = data.filter(c => c.status === '접수됨').length
+  const 처리중 = data.filter(c => c.status === '처리중').length
+  const 완료 = data.filter(c => c.status === '완료').length
+
+  document.getElementById('stats').innerHTML = `
+    <div class="stats-box">
+      <div class="stat-item">
+        <p class="stat-number">${total}</p>
+        <p>전체</p>
+      </div>
+      <div class="stat-item">
+        <p class="stat-number status-접수됨">${접수됨}</p>
+        <p>접수됨</p>
+      </div>
+      <div class="stat-item">
+        <p class="stat-number status-처리중">${처리중}</p>
+        <p>처리중</p>
+      </div>
+      <div class="stat-item">
+        <p class="stat-number status-완료">${완료}</p>
+        <p>완료</p>
+      </div>
+    </div>
+  `
 }
