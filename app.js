@@ -137,3 +137,77 @@ async function submitComplaint() {
   alert('민원이 신청되었습니다!')
   window.location.href = 'dashboard.html'
 }
+
+// 관리자 민원 목록 불러오기
+async function loadAdminComplaints() {
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    window.location.href = 'index.html'
+    return
+  }
+
+  const { data, error } = await supabase
+    .from('complaints')
+    .select('*')
+    .order('created_at', { ascending: false })
+
+  const list = document.getElementById('admin-complaint-list')
+
+  if (error || !data || data.length === 0) {
+    list.innerHTML = '<p>접수된 민원이 없어요.</p>'
+    return
+  }
+
+  list.innerHTML = data.map(c => `
+    <div class="complaint-item">
+      <p><strong>${c.category}</strong> - ${c.location}</p>
+      <p>${c.description}</p>
+      <p>상태: 
+        <select onchange="updateStatus('${c.id}', this.value)">
+          <option ${c.status === '접수됨' ? 'selected' : ''}>접수됨</option>
+          <option ${c.status === '처리중' ? 'selected' : ''}>처리중</option>
+          <option ${c.status === '완료' ? 'selected' : ''}>완료</option>
+        </select>
+      </p>
+      <button onclick="deleteComplaint('${c.id}')">삭제</button>
+      <p class="date">${new Date(c.created_at).toLocaleDateString()}</p>
+    </div>
+  `).join('')
+}
+
+// 상태 변경
+async function updateStatus(id, status) {
+  const { error } = await supabase
+    .from('complaints')
+    .update({ status })
+    .eq('id', id)
+
+  if (error) {
+    alert('상태 변경 실패: ' + error.message)
+  } else {
+    alert('상태가 변경되었습니다!')
+  }
+}
+
+// 민원 삭제
+async function deleteComplaint(id) {
+  if (!confirm('정말 삭제하시겠어요?')) return
+
+  const { error } = await supabase
+    .from('complaints')
+    .delete()
+    .eq('id', id)
+
+  if (error) {
+    alert('삭제 실패: ' + error.message)
+  } else {
+    alert('삭제되었습니다!')
+    loadAdminComplaints()
+  }
+}
+
+// admin 페이지면 자동 실행
+if (window.location.pathname.includes('admin')) {
+  loadAdminComplaints()
+}
