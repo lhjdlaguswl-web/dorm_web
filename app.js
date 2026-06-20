@@ -98,6 +98,17 @@ async function loadComplaints() {
     return
   }
 
+  // 관리자면 admin 페이지로 이동
+  const { data: userData } = await supabase
+    .from('users')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  if (userData && userData.role === 'admin') {
+    window.location.href = 'admin.html'
+    return
+  }
   const { data, error } = await supabase
     .from('complaints')
     .select('*')
