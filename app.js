@@ -171,6 +171,19 @@ async function loadAdminComplaints() {
     return
   }
 
+  // 관리자 권한 체크
+  const { data: userData } = await supabase
+    .from('users')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  if (!userData || userData.role !== 'admin') {
+    alert('관리자만 접근할 수 있어요!')
+    window.location.href = 'dashboard.html'
+    return
+  }
+
   const { data, error } = await supabase
     .from('complaints')
     .select('*')
