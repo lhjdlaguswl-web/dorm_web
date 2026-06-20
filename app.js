@@ -101,3 +101,39 @@ async function loadComplaints() {
 if (window.location.pathname.includes('dashboard')) {
   loadComplaints()
 }
+// 민원 신청
+async function submitComplaint() {
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    window.location.href = 'index.html'
+    return
+  }
+
+  const category = document.getElementById('category').value
+  const location = document.getElementById('location').value
+  const description = document.getElementById('description').value
+
+  if (!category || !location || !description) {
+    alert('모든 항목을 입력해주세요!')
+    return
+  }
+
+  const { error } = await supabase
+    .from('complaints')
+    .insert({
+      user_id: user.id,
+      category,
+      location,
+      description,
+      status: '접수됨'
+    })
+
+  if (error) {
+    alert('신청 실패: ' + error.message)
+    return
+  }
+
+  alert('민원이 신청되었습니다!')
+  window.location.href = 'dashboard.html'
+}
