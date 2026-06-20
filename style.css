@@ -130,3 +130,17 @@ textarea {
 .complaint-item button:hover {
   background-color: #dc2626;
 }
+.status-접수됨 {
+  color: #f59e0b;
+  font-weight: bold;
+}
+
+.status-처리중 {
+  color: #3b82f6;
+  font-weight: bold;
+}
+
+.status-완료 {
+  color: #22c55e;
+  font-weight: bold;
+}
