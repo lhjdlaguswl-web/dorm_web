@@ -33,7 +33,7 @@ async function login() {
   const password = document.getElementById('password').value
 
   const { data, error } = await supabase.auth.signInWithPassword({
-    email,
+    email: email + '@dorm.com',
     password
   })
 
@@ -55,10 +55,9 @@ async function register() {
 
   // Supabase Auth에 계정 생성
   const { data, error } = await supabase.auth.signUp({
-    email,
+    email: email + '@dorm.com',
     password
   })
-
   if (error) {
     alert('회원가입 실패: ' + error.message)
     return
@@ -70,7 +69,7 @@ async function register() {
     .insert({
       id: data.user.id,
       name,
-      email,
+      email: email + '@dorm.com',
       room_number,
       role: 'student'
     })
