@@ -126,7 +126,7 @@ async function loadComplaints() {
     <div class="complaint-item">
       <p><strong>${c.category}</strong> - ${c.location}</p>
       <p>${c.description}</p>
-      <p>상태: <span class="status">${c.status}</span></p>
+      <p>상태: <span class="status-${c.status}">${c.status}</span></p>
       <p class="date">${new Date(c.created_at).toLocaleDateString()}</p>
     </div>
   `).join('')
